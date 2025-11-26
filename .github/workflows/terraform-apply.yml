@@ -39,18 +39,78 @@ jobs:
           terraform_version: 1.6.0
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          echo "🔧 Initializing Terraform..."
+          terraform init
+          echo "✅ Terraform initialized successfully"
+
+      - name: Terraform Format
+        run: |
+          echo "🎨 Formatting Terraform files..."
+          terraform fmt -recursive
+          echo "✅ All files formatted"
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -out=tfplan
+        run: |
+          echo "📊 Running Terraform Plan..."
+          echo "================================================"
+          terraform plan -out=tfplan -no-color 2>&1 | tee plan_output.txt
+          echo "================================================"
+          echo "✅ Plan saved to tfplan"
+
+      - name: Display Plan
+        run: |
+          echo "## 📋 Terraform Plan (Pre-Apply)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`terraform" >> $GITHUB_STEP_SUMMARY
+          cat plan_output.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve tfplan
+        run: |
+          echo "🚀 Applying Terraform changes..."
+          echo "================================================"
+          terraform apply -auto-approve -no-color tfplan 2>&1 | tee apply_output.txt
+          exit_code=${PIPESTATUS[0]}
+          echo "================================================"
+          exit $exit_code
+
+      - name: Display Apply Results
+        if: always()
+        run: |
+          echo "## 🚀 Terraform Apply Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f apply_output.txt ]; then
+            echo "\`\`\`terraform" >> $GITHUB_STEP_SUMMARY
+            cat apply_output.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Terraform Output
+        if: success()
+        run: |
+          echo "📤 Terraform Outputs:"
+          echo "================================================"
+          terraform output
+          echo "================================================"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📤 Outputs" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          terraform output >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Check Apply Status
         if: steps.apply.outcome == 'failure'
         run: |
           echo "❌ Terraform apply failed"
           exit 1
+
+      - name: Success Message
+        if: success()
+        run: |
+          echo "✅ Infrastructure deployed successfully!"
+          echo "🎉 All changes have been applied to AWS"
