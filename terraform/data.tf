@@ -1,0 +1,5 @@
+# Información de la cuenta AWS actual
+data "aws_caller_identity" "current" {}
+
+# Información de la región actual
+data "aws_region" "current" {}

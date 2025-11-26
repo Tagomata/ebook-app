@@ -1,0 +1,4 @@
+aws_region   = "us-east-2"
+stack_id     = "ebook-app"
+environment  = "prod"
+project_name = "ebook-app"

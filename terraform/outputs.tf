@@ -1,0 +1,17 @@
+# outputs.tf
+# Outputs que se mostrarán después de terraform apply
+
+output "aws_region" {
+  description = "Región de AWS utilizada"
+  value       = var.aws_region
+}
+
+output "stack_id" {
+  description = "ID del stack desplegado"
+  value       = var.stack_id
+}
+
+output "environment" {
+  description = "Ambiente desplegado"
+  value       = var.environment
+}
