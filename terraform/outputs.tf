@@ -15,3 +15,13 @@ output "environment" {
   description = "Ambiente desplegado"
   value       = var.environment
 }
+
+output "project_name" {
+  description = "Nombre del proyecto"
+  value       = var.project_name
+}
+
+output "name_prefix" {
+  description = "Prefijo usado para nombres de recursos"
+  value       = local.name_prefix
+}

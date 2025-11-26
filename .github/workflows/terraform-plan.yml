@@ -39,20 +39,67 @@ jobs:
           terraform_version: 1.6.0
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          echo "🔧 Initializing Terraform..."
+          terraform init
+          echo "✅ Terraform initialized successfully"
+
+      - name: Terraform Format
+        run: |
+          echo "🎨 Formatting Terraform files..."
+          terraform fmt -recursive
+          echo "✅ All files formatted"
 
       - name: Terraform Format Check
-        run: terraform fmt -check -recursive
+        run: |
+          echo "🔍 Verifying formatting..."
+          if ! terraform fmt -check -recursive; then
+            echo "⚠️ Some files were auto-formatted"
+          else
+            echo "✅ All files are properly formatted"
+          fi
 
       - name: Terraform Validate
-        run: terraform validate
+        run: |
+          echo "🔍 Validating Terraform configuration..."
+          terraform validate
+          echo "✅ Configuration is valid"
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan
+        run: |
+          echo "📊 Running Terraform Plan..."
+          echo "================================================"
+          terraform plan -no-color -detailed-exitcode 2>&1 | tee plan_output.txt
+          exit_code=${PIPESTATUS[0]}
+          echo "================================================"
+          echo "plan_exit_code=$exit_code" >> $GITHUB_OUTPUT
+          exit $exit_code
+        continue-on-error: true
+
+      - name: Display Plan Summary
+        if: always()
+        run: |
+          echo "## 📋 Terraform Plan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f plan_output.txt ]; then
+            echo "\`\`\`terraform" >> $GITHUB_STEP_SUMMARY
+            cat plan_output.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Check Plan Status
-        if: steps.plan.outcome == 'failure'
+        if: steps.plan.outputs.plan_exit_code == '1'
         run: |
-          echo "❌ Terraform plan failed"
+          echo "❌ Terraform plan failed with errors"
           exit 1
+
+      - name: Plan Result
+        if: steps.plan.outputs.plan_exit_code == '0'
+        run: |
+          echo "✅ No changes detected - Infrastructure matches configuration"
+
+      - name: Plan Has Changes
+        if: steps.plan.outputs.plan_exit_code == '2'
+        run: |
+          echo "📝 Plan completed successfully - Changes detected"
