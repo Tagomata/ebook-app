@@ -25,3 +25,13 @@ output "name_prefix" {
   description = "Prefijo usado para nombres de recursos"
   value       = local.name_prefix
 }
+
+output "website_cloudfront_id" {
+  description = "Cloudfront Distribution ID"
+  value       = aws_cloudfront_distribution.website_cloudfront.id
+}
+
+output "website_cloudfront_domain_name" {
+  description = "Cloudfront Distribution Domain Name"
+  value       = aws_cloudfront_distribution.website_cloudfront.domain_name
+}
