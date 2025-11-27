@@ -13,4 +13,6 @@ locals {
     Project     = var.project_name
     ManagedBy   = "Terraform"
   }
+
+  domain_name = "wwww.sminfralab.cloud"
 }
