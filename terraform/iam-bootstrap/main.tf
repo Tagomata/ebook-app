@@ -165,6 +165,7 @@ data "aws_iam_policy_document" "terraform_permissions" {
       "iam:DeletePolicy",
       "iam:GetPolicy",
       "iam:ListPolicies",
+      "iam:TagPolicy"
     ]
     resources = ["*"]
   }
