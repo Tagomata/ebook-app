@@ -26,7 +26,7 @@ resource "aws_s3_bucket_policy" "website_cloudfront_access" {
           Resource = "${module.website_bucket.bucket_arn}/*"
           Condition = {
             StringEquals = {
-              "aws:SourceArn" = aws_cloudfront_distribution.website_cloudfront.arn
+              "AWS:SourceArn" = aws_cloudfront_distribution.website_cloudfront.arn
             }
           }
         },
