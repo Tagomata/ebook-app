@@ -158,7 +158,9 @@ data "aws_iam_policy_document" "terraform_permissions" {
       "iam:ListAttachedRolePolicies",
       "iam:ListRolePolicies",
       "iam:TagRole",
-      "iam:UntagRole"
+      "iam:UntagRole",
+      "iam:ListOpenIDConnectProviders",
+      "iam:GetOpenIDConnectProvider"
     ]
     resources = ["*"]
   }
