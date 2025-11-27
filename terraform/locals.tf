@@ -14,5 +14,5 @@ locals {
     ManagedBy   = "Terraform"
   }
 
-  domain_name = "wwww.sminfralab.cloud"
+  domain_name = "www.sminfralab.cloud"
 }
