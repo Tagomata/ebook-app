@@ -25,5 +25,5 @@ variable "project_name" {
 variable "github_repo_frontend" {
   description = "Nombre del repositorio frontend"
   type        = string
-  default     = "ebook-app-fronted"
+  default     = "ebook-app-frontend"
 }
