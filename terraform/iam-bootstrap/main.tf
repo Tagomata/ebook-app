@@ -167,7 +167,8 @@ data "aws_iam_policy_document" "terraform_permissions" {
       "iam:ListPolicies",
       "iam:TagPolicy",
       "iam:GetPolicyVersion",
-      "iam:ListPolicyVersions"
+      "iam:ListPolicyVersions",
+      "iam:UpdateAssumeRolePolicy"
     ]
     resources = ["*"]
   }
